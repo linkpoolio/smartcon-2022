@@ -1,0 +1,452 @@
+{
+	"info": {
+		"_postman_id": "f5503124-20e0-4e43-8601-0c6c014d4629",
+		"name": "SmartCon 2022",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16989240"
+	},
+	"item": [
+		{
+			"name": "Global Queries",
+			"item": [
+				{
+					"name": "Feed Events",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT * FROM feed_events ORDER BY ts DESC LIMIT 5;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Feed Events Aggregate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT * FROM feed_aggregates_by_1d ORDER BY \"interval\" DESC LIMIT 5;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total Daily LINK Rewards",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT network_group, network_name, sum(link_reward_sum) as \"value\"\nFROM feed_aggregates_by_1d\nWHERE interval BETWEEN 'Thu, 16 Jun 2022 23:01:00 GMT' AND 'Thu, 23 Jun 2022 22:58:00 GMT'\nAND network_name IN ('Mainnet')\nGROUP BY network_group, network_name\nORDER BY \"value\" DESC;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total Daily Feed Transactions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT network_group, network_name, sum(transaction_count) as \"value\"\nFROM feed_aggregates_by_1d\nWHERE interval BETWEEN 'Thu, 16 Jun 2022 23:01:00 GMT' AND 'Thu, 23 Jun 2022 22:58:00 GMT'\nAND network_name IN ('Mainnet')\nGROUP BY network_group, network_name\nORDER BY \"value\" DESC;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Total Daily VRF v1 & v2 Requests",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT time, sum(value) as value\nFROM (SELECT time_bucket_gapfill('86400s', ts) as time, coalesce(count(*), 0) as \"value\"\n      FROM vrf_v1_events\n      WHERE ts BETWEEN 'Mon, 23 May 2022 23:01:00 GMT' AND 'Thu, 23 Jun 2022 22:58:00 GMT'\n        AND event_name = 'randomness_request'\n        AND network_name IN ('Mainnet')\n      GROUP BY time\n      UNION\n      SELECT time_bucket_gapfill('86400s', ts) as time, coalesce(count(*), 0) as \"value\"\n      FROM vrf_v2_events\n      WHERE ts BETWEEN 'Mon, 23 May 2022 23:01:00 GMT' AND 'Thu, 23 Jun 2022 22:58:00 GMT'\n        AND event_name = 'random_words_requested'\n        AND network_name IN ('Mainnet')\n      GROUP BY time\n      ORDER BY time) as requests\nGROUP BY time;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active Nodes by Network",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT network_group, network_name, count(DISTINCT node_id) as \"value\"\nFROM node_aggregates_by_1d\nWHERE interval BETWEEN 'Mon, 23 May 2022 23:01:00 GMT' AND 'Thu, 23 Jun 2022 22:58:00 GMT'\nAND network_name IN ('Mainnet')\nGROUP BY network_group, network_name\nORDER BY \"value\" DESC;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Individual Feed Queries",
+			"item": [
+				{
+					"name": "LINK / USD Answer Every 5min for 30 Days",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT time_bucket('5m', interval) as time,\n       network_id,\n       network_group,\n       feed_address,\n       feed_name,\n       locf(last(answer, interval), treat_null_as_missing => true) as \"value\"\nFROM feed_answers_by_5m\nWHERE feed_name = 'LINK / USD'\n  AND interval >= now() - interval '30 days'\n  AND network_name = 'Mainnet'\nGROUP BY time, network_id, network_group, feed_address, feed_name\nORDER BY time;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Daily LINK Rewards for BTC / USD",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT \"interval\" as time,\n       network_id,\n       network_group,\n       feed_address,\n       coalesce(sum(link_reward_sum), 0) as \"value\"\nFROM feed_aggregates_by_1d\nWHERE feed_name = 'BTC / USD'\n  AND \"interval\" >= now() - interval '30 days'\n  AND network_name = 'Mainnet'\nGROUP BY time, network_id,\n         network_group,\n         feed_address\nORDER BY time DESC;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Individual Node Queries",
+			"item": [
+				{
+					"name": "Daily Gas Costs in USD (30 Days)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT\n   time,\n   network_id,\n   network_group,\n   node_name,\n   coalesce(sum(gas_costs), 0) as \"value\" \nFROM\n   (\n      SELECT\n         events.interval as time,\n         node_name,\n         network_group,\n         sum(events.total_eth) * last(gas_pair.answer, answer) as gas_costs,\n         network_id \n      FROM\n         (\n(\n            SELECT\n               interval, node_id, node_name, network_group, network_id, ether_spent_sum as total_eth \n            FROM\n               node_aggregates_by_1d \n            WHERE\n               node_name = 'LinkPool' \n               AND \"interval\" >= now() - interval '30 days' \n               AND network_name = 'Mainnet' \n            ORDER BY\n               interval) events \n               LEFT JOIN\n                  (\n                     SELECT\n                        id,\n                        gas_token \n                     FROM\n                        networks\n                  )\n                  as gas_token \n                  ON events.network_id = gas_token.id \n               LEFT JOIN\n                  (\n                     SELECT\n                        interval,\n                        feed_name,\n                        last(answer, interval) as answer \n                     FROM\n                        feed_answers_by_1d \n                     WHERE\n                        \"interval\" >= now() - interval '30 days' \n                        AND feed_name IN \n                        (\n                           SELECT DISTINCT\n                              (gas_token || ' / USD') as gas_token \n                           FROM\n                              networks\n                        )\n                     GROUP BY\n                        interval,\n                        feed_name \n                     ORDER BY\n                        interval\n                  )\n                  gas_pair \n                  ON events.interval = gas_pair.interval \n                  AND gas_token.gas_token || ' / USD' = gas_pair.feed_name \n         )\n      GROUP BY\n         events.interval,\n         network_id,\n         node_id,\n         node_name,\n         network_group\n   )\n   as gas_sums \nGROUP BY\n   time,\n   network_id,\n   network_group,\n   node_name;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Daily Profit in USD (30 Days)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "SELECT\n   time,\n   network_id,\n   network_group,\n   node_name,\n   coalesce(sum(link_rewards) - sum(gas_costs), 0) as \"value\" \nFROM\n   (\n      SELECT\n         events.interval as time,\n         network_id,\n         network_group,\n         node_name,\n         sum(events.total_eth) * last(gas_pair.answer, answer) as gas_costs,\n         sum(events.total_link) * last(link_usd.link_answer, answer) as link_rewards \n      FROM\n         (\n(\n            SELECT\n               interval, node_id, network_id, network_group, node_name, ether_spent_sum as total_eth, link_reward_sum as total_link \n            FROM\n               node_aggregates_by_1d \n            WHERE\n               node_name = 'LinkPool' \n               AND \"interval\" >= now() - interval '30 days' \n               AND network_name = 'Mainnet' \n            ORDER BY\n               interval) events \n               LEFT JOIN\n                  (\n                     SELECT\n                        id,\n                        gas_token \n                     FROM\n                        networks\n                  )\n                  as gas_token \n                  ON events.network_id = gas_token.id \n               LEFT JOIN\n                  (\n                     SELECT\n                        interval,\n                        feed_name,\n                        last(answer, interval) as answer \n                     FROM\n                        feed_answers_by_1d \n                     WHERE\n                        \"interval\" >= now() - interval '30 days' \n                        AND feed_name IN \n                        (\n                           SELECT DISTINCT\n                              (gas_token || ' / USD') as gas_token \n                           FROM\n                              networks\n                        )\n                     GROUP BY\n                        interval,\n                        feed_name \n                     ORDER BY\n                        interval\n                  )\n                  gas_pair \n                  ON events.interval = gas_pair.interval \n                  AND gas_token.gas_token || ' / USD' = gas_pair.feed_name \n               LEFT JOIN\n                  (\n                     SELECT\n                        interval,\n                        last(answer, interval) as link_answer \n                     FROM\n                        feed_answers_by_1d \n                     WHERE\n                        feed_name = 'LINK / USD' \n                        AND network_name = 'Mainnet' \n                        AND \"interval\" >= now() - interval '30 days' \n                     GROUP BY\n                        \"interval\" \n                     ORDER BY\n                        \"interval\"\n                  )\n                  link_usd \n                  ON events.interval = link_usd.interval \n         )\n      GROUP BY\n         events.interval,\n         network_id,\n         node_id,\n         network_id,\n         network_group,\n         node_name\n   )\n   as gas_sums \nGROUP BY\n   time,\n   network_id,\n   network_group,\n   node_name;"
+						},
+						"url": {
+							"raw": "https://api.market.link/v1/metrics/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"metrics",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TAMI",
+			"item": [
+				{
+					"name": "Collection Res",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-access-key-id",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "x-secret-key",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.market.link/v1/nft/metrics/:address",
+							"protocol": "https",
+							"host": [
+								"api",
+								"market",
+								"link"
+							],
+							"path": [
+								"v1",
+								"nft",
+								"metrics",
+								":address"
+							],
+							"query": [
+								{
+									"key": "markets",
+									"value": "opensea,cryptopunksmarket,looksrare",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "address",
+									"value": "0xed5af388653567af2f388e6224dc7c4b3241c544"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Ex. Collection Res",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-access-key-id",
+										"value": "",
+										"type": "text"
+									},
+									{
+										"key": "x-secret-key",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://api.market.link/v1/nft/metrics/:address",
+									"protocol": "https",
+									"host": [
+										"api",
+										"market",
+										"link"
+									],
+									"path": [
+										"v1",
+										"nft",
+										"metrics",
+										":address"
+									],
+									"variable": [
+										{
+											"key": "address",
+											"value": "0xed5af388653567af2f388e6224dc7c4b3241c544"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 08 Sep 2022 20:04:11 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "105"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Content-Type, Content-Length, Accept, Accept-Encoding, Authorization, Origin, Cache-Control, X-CSRF-Token, X-Request-Id, X-Requested-With, X-Secret-Key, X-Access-Key-Id"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, HEAD, PATCH, OPTIONS, GET, PUT, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "://"
+								},
+								{
+									"key": "Access-Control-Request-Headers",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Request-Method",
+									"value": "true"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "max-age=0"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Ratelimit-Limit",
+									"value": "7200"
+								},
+								{
+									"key": "X-Ratelimit-Remaining",
+									"value": "7198"
+								},
+								{
+									"key": "X-Ratelimit-Reset",
+									"value": "1662670664"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=15724800; includeSubDomains"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"answer\": {\n        \"eth\": \"81706.05255140227\",\n        \"gwei\": \"81706052551402.27\",\n        \"wei\": \"81706052551402270000000\"\n    },\n    \"message\": \"successful\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
