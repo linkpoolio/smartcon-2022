@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "f5503124-20e0-4e43-8601-0c6c014d4629",
-		"name": "SmartCon 2022",
+		"name": "LinkPool Metrics (SmartCon 2022)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "16989240"
 	},
@@ -290,28 +290,26 @@
 						"method": "GET",
 						"header": [
 							{
-								"key": "x-access-key-id",
+								"key": "X-RapidAPI-Key",
 								"value": "",
 								"type": "text"
 							},
 							{
-								"key": "x-secret-key",
-								"value": "",
+								"key": "X-RapidAPI-Host",
+								"value": "nft-metrics-tami.p.rapidapi.com",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://api.market.link/v1/nft/metrics/:address",
+							"raw": "https://nft-metrics-tami.p.rapidapi.com/:address",
 							"protocol": "https",
 							"host": [
-								"api",
-								"market",
-								"link"
+								"nft-metrics-tami",
+								"p",
+								"rapidapi",
+								"com"
 							],
 							"path": [
-								"v1",
-								"nft",
-								"metrics",
 								":address"
 							],
 							"query": [
@@ -324,7 +322,7 @@
 							"variable": [
 								{
 									"key": "address",
-									"value": "0xed5af388653567af2f388e6224dc7c4b3241c544"
+									"value": null
 								}
 							]
 						}
@@ -336,28 +334,26 @@
 								"method": "GET",
 								"header": [
 									{
-										"key": "x-access-key-id",
+										"key": "X-RapidAPI-Key",
 										"value": "",
 										"type": "text"
 									},
 									{
-										"key": "x-secret-key",
-										"value": "",
+										"key": "X-RapidAPI-Host",
+										"value": "nft-metrics-tami.p.rapidapi.com",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "https://api.market.link/v1/nft/metrics/:address",
+									"raw": "https://nft-metrics-tami.p.rapidapi.com/:address",
 									"protocol": "https",
 									"host": [
-										"api",
-										"market",
-										"link"
+										"nft-metrics-tami",
+										"p",
+										"rapidapi",
+										"com"
 									],
 									"path": [
-										"v1",
-										"nft",
-										"metrics",
 										":address"
 									],
 									"variable": [
