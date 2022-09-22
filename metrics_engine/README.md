@@ -13,7 +13,7 @@ curl --location --request POST 'https://api.market.link/v1/metrics' --header 'Co
 
 ## Links
 
-Golang TAMI Implementation **[https://github.com/linkpoolio/go-tami](https://github.com/linkpoolio/go-tami)**
-Original TAMI repo (TypeScript) **[https://github.com/Mimicry-Protocol/TAMI](https://github.com/Mimicry-Protocol/TAMI)**
-Market Metrics API Docs **[https://docs.linkpool.io/docs/market_metrics_api_overview](https://docs.linkpool.io/docs/market_metrics_api_overview)**
-NFT Metrics TAMI Collection API **[https://rapidapi.com/linkpool-linkpool-default/api/nft-metrics-tami](https://rapidapi.com/linkpool-linkpool-default/api/nft-metrics-tami)**
+- Golang TAMI Implementation **[https://github.com/linkpoolio/go-tami](https://github.com/linkpoolio/go-tami)**
+- Original TAMI repo (TypeScript) **[https://github.com/Mimicry-Protocol/TAMI](https://github.com/Mimicry-Protocol/TAMI)**
+- Market Metrics API Docs **[https://docs.linkpool.io/docs/market_metrics_api_overview](https://docs.linkpool.io/docs/market_metrics_api_overview)**
+- NFT Metrics TAMI Collection API **[https://rapidapi.com/organization/linkpool](https://rapidapi.com/organization/linkpool)**
