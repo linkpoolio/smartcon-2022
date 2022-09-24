@@ -1,0 +1,39 @@
+nameOverride: workshop-node
+nodeConfig:
+  network: goerli
+  ethUrl: wss://goerli-ws.naas.linkpool.io
+  secureCookies: false
+  enableGasUpdater: true
+  apiUser: "daniel@linkpool.io"
+  apiPassword: "MySuperSecureExamplePassword123"
+  walletPassword: "1-800-GET-LINK-NOW"
+  featureOffChainReporting: true
+  extraVars:
+    myexampleenv: wat
+resources:
+  requests:
+    cpu: 1000m
+    memory: 2048Mi
+postgresql:
+  enabled: true
+  database: "chainlink"
+  password: "chainlink_everything777"
+  username: "postgres"
+postgresqlHA:
+  enabled: false
+p2pService:
+  enabled: false
+ingress:
+  enabled: true
+  class: "ingress-nginx-external"
+  tls:
+    secretName: naas-wildcard-cert
+  staticDomains:
+    - workshop-node.us-east1.naas.linkpool.io
+#networkPolicy:
+#  namespacePolicy:
+#    enabled: true
+#  httpIngressPolicy:
+#    enabled: true
+#  prometheusPolicy:
+#    enabled: true
