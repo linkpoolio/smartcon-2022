@@ -18,7 +18,7 @@ linkpool-public-stable/chainlink	0.7.6        	v1.1.0     	A Helm chart for depl
 `helm install linkpool-public-stable/chainlink`
 
 I'll install it with these values like so:
-`helm install workshop-node --namespace workshop stable/chainlink -f chainlink-helm-demo/test.values.yml`
+`helm install workshop-node --namespace workshop linkpool-public-stable/chainlink -f example.values.yml`
 
 1. Wait ~1-2 minutes for postgres and the chainlink node to initialize.
 
